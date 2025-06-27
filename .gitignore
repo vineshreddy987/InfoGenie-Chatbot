@@ -1,0 +1,34 @@
+# Virtual Environment
+chatbot/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Secrets
+.env
+*.env
+secrets.json
+config.json
+
+# Model/Data files
+*.spacy
+*.pkl
+*.h5
+*.pt
+*.bin
+*.csv
+*.json
+*.db
+*.sqlite3
+*.zip
+
+# System
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
