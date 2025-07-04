@@ -1,20 +1,18 @@
-# Use a Python base image
 FROM python:3.8-slim
 
-# Install system dependencies
+# Install system packages
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
-    libmysqlclient-dev \
+    libmariadb-dev \
+    libmariadb-dev-compat \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip
+# Upgrade pip and install Cython
 RUN pip install --upgrade pip==24.0
-
-# Install Cython first
 RUN pip install Cython==0.29.36
 
-# Install dependencies that need strict version control
+# Install spaCy-compatible ecosystem
 RUN pip install \
     murmurhash==1.0.2 \
     cymem==1.31.2 \
@@ -26,15 +24,12 @@ RUN pip install \
     chatterbot==1.0.5 \
     chatterbot-corpus==1.2.0
 
-# Install your other Python dependencies (adjust as needed)
+# Copy and install remaining requirements
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Set working directory
 WORKDIR /app
-
-# Copy your app
 COPY . .
 
-# Command to run your app
 CMD ["python", "app.py"]
