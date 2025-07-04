@@ -26,7 +26,7 @@ RUN pip install cython==0.29.36
 RUN pip install \
     murmurhash==1.0.2 \
     cymem==2.0.6 \
-    preshed==3.0.6 \
+    preshed==1.0.1 \
     blis==0.2.4 \
     srsly==1.0.5 \
     thinc==7.0.8
