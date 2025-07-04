@@ -1,39 +1,41 @@
-# Use official Python 3.8 base image
+# Use Python 3.8 slim image
 FROM python:3.8-slim
 
-# Set working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Prevents Python from writing .pyc files to disk
-ENV PYTHONDONTWRITEBYTECODE=1
-
-# Prevents Python from buffering stdout and stderr
-ENV PYTHONUNBUFFERED=1
-
-# Install system dependencies
+# Install system dependencies required to build some Python packages
 RUN apt-get update && apt-get install -y \
-    gcc \
     build-essential \
+    gcc \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Cython first to support packages that require it at build time
-RUN pip install --upgrade pip==24.0 setuptools==49.6.0 wheel
-RUN pip install cython==0.29.36
+# Install pip, setuptools, wheel and Cython before other requirements
+RUN pip install --upgrade pip==24.0 setuptools==49.6.0 wheel \
+    && pip install cython==0.29.36
 
-# Copy dependency file
+# Install specific versions of dependencies that don't compile well from source
+RUN pip install \
+    murmurhash==0.28.0 \
+    cymem==1.31.2 \
+    preshed==1.0.1 \
+    thinc==7.0.8 \
+    spacy==2.1.9 \
+    chatterbot==1.0.5 \
+    chatterbot-corpus==1.2.0
+
+# Install other dependencies
 COPY requirements.txt .
-
-# Install Python dependencies (no-build-isolation only after Cython is available)
 RUN pip install --no-build-isolation -r requirements.txt
 
-# Download spaCy English model manually for spaCy 2.1.9
+# Download spaCy English model for v2.1.9
 RUN python -m spacy download en_core_web_sm
 
-# Copy the rest of the application code
+# Copy the rest of the project files
 COPY . .
 
-# Expose port (if using Flask)
+# Expose port for Flask
 EXPOSE 5000
 
 # Run the app
