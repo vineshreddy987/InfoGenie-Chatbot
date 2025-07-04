@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: infoGenie-chatbot      # Change this to your app name
+    runtime: python
+    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_sm
+    startCommand: gunicorn app:app   # Replace 'app' with your Python filename if it's not app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.8.13
